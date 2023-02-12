@@ -1,7 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Iproduct} from "./product";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ProductService {
   getProducts(): Iproduct[] {
       return [
@@ -55,6 +57,6 @@ export class ProductService {
           "starRating": 4.6,
           "imageUrl": "assets/images/xbox-controller.png"
         }
-      ];g
+      ];
   }
 }
