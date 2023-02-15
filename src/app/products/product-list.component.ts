@@ -15,6 +15,8 @@ export class ProductListComponent implements OnInit {
   }
 
   pageTitle: string = 'Product List';
+
+  errorMessage: string = '';
   imageWidth: number = 50;
   imageMargin: number = 2;
   showImage: boolean = false;
@@ -45,8 +47,11 @@ export class ProductListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.products = this.productService.getProducts();
-    this.filteredProducts = this.products;
+    this.productService.getProducts().subscribe({
+      next: products => this.products = products,
+      error: err => this.errorMessage = err
+    });
+    //this.filteredProducts = this.products;
   }
 
   onRatingClicked(message: string): void {
