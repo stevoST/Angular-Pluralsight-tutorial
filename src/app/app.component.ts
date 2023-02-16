@@ -10,6 +10,9 @@ selector: 'pm-root',
         <li><a class='nav-link' routerLink='/products'>Product List</a></li>
       </ul>
     </nav>
+    <div class='container'>
+        <router-outlet></router-outlet>
+    </div>
   `
 })
 export class AppComponent{
