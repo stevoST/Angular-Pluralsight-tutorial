@@ -1,31 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Iproduct} from "./product";
+import {Subscription} from "rxjs";
+import {ProductService} from "./product.service";
 
 @Component({
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
   pageTitle: string = 'Product Detail';
-  producut: Iproduct | undefined;
+  product: Iproduct | undefined;
+  sub!: Subscription;
+  products: Iproduct[] = [];
+  errorMessage: string = '';
+
 
   constructor(private route: ActivatedRoute,
-              private router: Router) { }
+              private productService: ProductService,
+              private router: Router) {
+  }
 
   ngOnInit(): void {
+    this.sub = this.productService.getProducts().subscribe({
+      next: products => {
+        this.products = products;
+      },
+      error: err => this.errorMessage = err
+    });
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.pageTitle += ` : ${id}`
-    this.producut =  {
-      "productId": 1,
-      "productName": "Leaf Rake",
-      "productCode": "GDN-0011",
-      "releaseDate": "March 19, 2021",
-      "description": "Leaf rake with 48-inch wooden handle.",
-      "price": 19.95,
-      "starRating": 3.2,
-      "imageUrl": "assets/images/leaf_rake.png"
-    };
+    this.product = this.products.filter((product: Iproduct) => product.productId === id)[0];
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
   onBack(): void {
