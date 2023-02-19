@@ -12,7 +12,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   pageTitle: string = 'Product Detail';
   product: Iproduct | undefined;
   sub!: Subscription;
-  products: Iproduct[] = [];
   errorMessage: string = '';
 
 
@@ -22,15 +21,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.pageTitle += ` : ${id}`
     this.sub = this.productService.getProducts().subscribe({
       next: products => {
-        this.products = products;
+        this.product = products
+          .filter((product: Iproduct) => product.productId === id)[0];
       },
       error: err => this.errorMessage = err
     });
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.pageTitle += ` : ${id}`
-    this.product = this.products.filter((product: Iproduct) => product.productId === id)[0];
   }
 
   ngOnDestroy(): void {
