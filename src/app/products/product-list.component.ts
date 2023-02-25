@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Iproduct} from "./product";
+import {IProduct} from "./product";
 import {ProductService} from "./product.service";
 import {Subscription} from "rxjs";
 
@@ -33,13 +33,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.filteredProducts = this.performFilter(value);
   }
 
-  filteredProducts: Iproduct[] = [];
+  filteredProducts: IProduct[] = [];
 
-  products: Iproduct[] = [];
+  products: IProduct[] = [];
 
-  performFilter(filterBy: string): Iproduct[] {
+  performFilter(filterBy: string): IProduct[] {
     filterBy = filterBy.toLowerCase();
-    return this.products.filter((product: Iproduct) =>
+    return this.products.filter((product: IProduct) =>
       product.productName.toLowerCase().includes(filterBy))
   }
 

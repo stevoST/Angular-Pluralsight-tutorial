@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {Iproduct} from "./product";
+import {IProduct} from "./product";
 import {Subscription} from "rxjs";
 import {ProductService} from "./product.service";
 
@@ -8,9 +8,9 @@ import {ProductService} from "./product.service";
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
-export class ProductDetailComponent implements OnInit, OnDestroy {
+export class ProductDetailComponent implements OnInit {
   pageTitle: string = 'Product Detail';
-  product: Iproduct | undefined;
+  product: IProduct | undefined;
   sub!: Subscription;
   errorMessage: string = '';
 
@@ -22,18 +22,18 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.pageTitle += ` : ${id}`
-    this.sub = this.productService.getProducts().subscribe({
-      next: products => {
-        this.product = products
-          .filter((product: Iproduct) => product.productId === id)[0];
-      },
-      error: err => this.errorMessage = err
-    });
+    this.pageTitle += ` : ${id}`;
+    if (id){
+      this.getProduct(id);
+    }
   }
 
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
+  getProduct(id: Number): void {
+    this.productService.getProduct(id).subscribe({
+      next: product => this.product = product,
+      error: err => this.errorMessage = err
+      }
+    );
   }
 
   onBack(): void {

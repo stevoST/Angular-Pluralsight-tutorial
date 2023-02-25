@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {Iproduct} from "./product";
+import {IProduct} from "./product";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {Observable, catchError, tap, throwError} from "rxjs";
+import {Observable, catchError, tap, throwError, map} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -11,21 +11,28 @@ export class ProductService {
 
   constructor(private http: HttpClient) {
   }
-  getProducts(): Observable<Iproduct[]> {
-      return this.http.get<Iproduct[]>(this.productUrl).pipe(
-        // tap(data => console.log('All', JSON.stringify(data))),
-        catchError(this.handleError)
-      );
+
+  getProducts(): Observable<IProduct[]> {
+    return this.http.get<IProduct[]>(this.productUrl).pipe(
+      // tap(data => console.log('All', JSON.stringify(data))),
+      catchError(this.handleError)
+    );
   }
 
-  private handleError(err: HttpErrorResponse){
+  getProduct(id: Number): Observable<IProduct | undefined> {
+    return this.getProducts().pipe(
+      map((products: IProduct[]) => products.find((product: IProduct) => product.productId === id))
+    )
+  }
+
+  private handleError(err: HttpErrorResponse) {
     let errorMessage = '';
-    if(err.error instanceof ErrorEvent){
+    if (err.error instanceof ErrorEvent) {
       errorMessage = `An error occurred: ${err.error.message}`;
     } else {
       errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
     }
     console.error(errorMessage)
-    return throwError(()=>errorMessage)
+    return throwError(() => errorMessage)
   }
 }
